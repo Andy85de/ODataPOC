@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataWithAntlr", "ODataWithAntlr\ODataWithAntlr.csproj", "{2F4A8226-29E5-413F-8E0E-A1950716FEC4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1AC0EDB-959B-4035-9357-E444EF083A1F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{99B2B219-7A16-46AA-9B6D-BBE6EA1EDFF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataQueryTests", "ODataQueryTests\ODataQueryTests.csproj", "{6D4C9423-8E26-4778-9764-DEE6F4263A2F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F4A8226-29E5-413F-8E0E-A1950716FEC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F4A8226-29E5-413F-8E0E-A1950716FEC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F4A8226-29E5-413F-8E0E-A1950716FEC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F4A8226-29E5-413F-8E0E-A1950716FEC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D4C9423-8E26-4778-9764-DEE6F4263A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D4C9423-8E26-4778-9764-DEE6F4263A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D4C9423-8E26-4778-9764-DEE6F4263A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D4C9423-8E26-4778-9764-DEE6F4263A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F4A8226-29E5-413F-8E0E-A1950716FEC4} = {D1AC0EDB-959B-4035-9357-E444EF083A1F}
+		{6D4C9423-8E26-4778-9764-DEE6F4263A2F} = {99B2B219-7A16-46AA-9B6D-BBE6EA1EDFF3}
+	EndGlobalSection
+EndGlobal
