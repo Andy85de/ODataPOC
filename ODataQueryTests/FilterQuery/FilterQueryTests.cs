@@ -62,12 +62,19 @@ namespace ODataQueryTests
         }
         
         [Theory]
-        [InlineData("lt")]
+        [InlineData(ODataExpressionOperators.LessEqualsOperator)]
+        [InlineData(ODataExpressionOperators.LessThenOperator)]
+        [InlineData(ODataExpressionOperators.EqualsOperator)]
+        [InlineData(ODataExpressionOperators.GreaterThenOperator)]
+        [InlineData(ODataExpressionOperators.GreaterEqualsOperator)]
+        [InlineData(ODataExpressionOperators.NotEqualsOperator)]
         public void FilterQueryCreateEqualsExpression(string @operator)
         {
             string queryString = $"Date {@operator} datetime′2022-01-01T00:00:00′";
             var rootNode = FilterQueryGrammar.ExpressionNode.Parse(queryString);
+            var rootNodeToCompare = new ExpressionNode("Date", "2022-01-01T00:00:00", @operator.GetOperatorType());
             
+            Assert.Equal(rootNode, rootNodeToCompare);
         }
     }
 }
