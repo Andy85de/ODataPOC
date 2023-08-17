@@ -11,6 +11,12 @@ public class TreeNodeWithTwoChildren: TreeNode
     {
     }
 
+    public TreeNodeWithTwoChildren(TreeNode left, TreeNode right):base(null)
+    {
+        LeftChild = left;
+        RightChild = right;
+    }
+    
     public TreeNodeWithTwoChildren(TreeNode parent, string id) : base(parent, id)
     {
     }

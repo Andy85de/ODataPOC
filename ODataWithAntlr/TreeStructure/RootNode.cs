@@ -31,5 +31,10 @@ namespace ODataWithSprache.TreeStructure
 
             return root;
         }
+
+        public override TreeNode Clone(TreeNode newParent = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

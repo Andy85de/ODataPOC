@@ -1,6 +1,8 @@
-﻿namespace ODataWithSprache.Extensions;
+﻿using ODataWithSprache.Grammar;
+using ODataWithSprache.TreeStructure;
 
-public class EnumExtensions
+namespace ODataWithSprache.Extensions;
+
+public static class EnumExtensions
 {
-    
 }

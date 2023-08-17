@@ -1,6 +1,6 @@
 ﻿namespace ODataWithSprache.Grammar;
 
-public class QuatationCharacter
+public class QuotedCharacter
 {
-    
+    public const char SingleQuotedCharacter = '′';
 }
