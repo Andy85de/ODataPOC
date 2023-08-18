@@ -9,7 +9,7 @@ public class QueryOptionsTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void GetFilterStringWholeFilterStringWithAmperSand(bool isUpperCase)
+    public void GetFilterStringWholeFilterStringWithAmpersand(bool isUpperCase)
     {
         var queryString = "$filter=Date ge datetime’2021-01-01T00:00:00′&$orderby=name,desc";
         var queryResult = "Date ge datetime’2021-01-01T00:00:00′";
@@ -21,19 +21,19 @@ public class QueryOptionsTests
             queryResult = queryResult.ToUpper();
         }
 
-        string? filterQuery = new OdataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+        string? filterQuery = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         Assert.Equal(filterQuery, queryResult);
     }
 
     [Fact]
-    public void GetFilterStringWholeFilterStringWithoutAmperSand()
+    public void GetFilterStringWholeFilterStringWithoutAmpersand()
     {
         const string queryString = "$filter=Date ge datetime’2021-01-01T00:00:00′$orderby=name,desc";
         const string queryResult = "Date ge datetime’2021-01-01T00:00:00′";
         const string queryOption = "filter";
 
-        string? filterQuery = new OdataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+        string? filterQuery = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         Assert.Equal(filterQuery, queryResult);
     }
@@ -45,7 +45,7 @@ public class QueryOptionsTests
         const string queryResult = "Date ge datetime’2021-01-01T00:00:00′";
         const string queryOption = "filter";
         
-        string? filterQuery = new OdataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+        string? filterQuery = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         Assert.Equal(filterQuery, queryResult);
     }
@@ -56,7 +56,7 @@ public class QueryOptionsTests
     [InlineData("http://ServiceRoot/Movies?$select=Id,Name,Classification,RunningTime&$filter=contains(Name, 'li')&$orderby=Name desc","contains(Name, 'li')", "filter")]
     public void GetOrderByStringOutOfLongQuery(string queryString, string resultCompareString, string filterOption)
     {
-        var parsedQuery = new OdataQueryOptionsParser(filterOption).PartedQueryForSpecialOption.Parse(queryString);
+        var parsedQuery = new ODataQueryOptionsParser(filterOption).PartedQueryForSpecialOption.Parse(queryString);
         resultCompareString.Should().BeEquivalentTo(parsedQuery);
     }
 

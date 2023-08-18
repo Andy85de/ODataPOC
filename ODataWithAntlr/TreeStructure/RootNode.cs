@@ -8,12 +8,12 @@ namespace ODataWithSprache.TreeStructure
         {
         }
 
-        public OdataFilterOption _operatorType;
+        public ODataFilterOption _operatorType;
 
         public string OriginalString;
 
 
-        public RootNode(OdataFilterOption @operator, string originalQuery) : base(null)
+        public RootNode(ODataFilterOption @operator, string originalQuery) : base(null)
         {
             _operatorType = @operator;
             OriginalString = originalQuery;

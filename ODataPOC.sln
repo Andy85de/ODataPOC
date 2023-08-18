@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1AC0EDB-959
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{99B2B219-7A16-46AA-9B6D-BBE6EA1EDFF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataQueryTests", "ODataQueryTests\ODataQueryTests.csproj", "{6D4C9423-8E26-4778-9764-DEE6F4263A2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODataQuery.Tests", "ODataQuery.Tests\ODataQuery.Tests.csproj", "{6D4C9423-8E26-4778-9764-DEE6F4263A2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

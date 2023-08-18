@@ -19,12 +19,8 @@
       <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.0" />
       <PackageReference Include="Sprache" Version="2.3.1" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>ODataQuery.Tests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
-
-
-
-    <ItemGroup>
-      <Folder Include="AntlrJava\AntrlGrammatic\" />
-    </ItemGroup>
-
 </Project>

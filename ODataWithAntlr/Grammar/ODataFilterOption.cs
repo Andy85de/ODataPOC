@@ -1,6 +1,6 @@
 ﻿namespace ODataWithSprache.Grammar;
 
-public enum OdataFilterOption
+public enum ODataFilterOption
 {
     None,
     DollarFilter,

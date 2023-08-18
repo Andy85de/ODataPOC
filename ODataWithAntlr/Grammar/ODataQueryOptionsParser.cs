@@ -3,16 +3,16 @@ using Sprache;
 
 namespace ODataWithSprache.Grammar;
 
-public class OdataQueryOptionsParser
+public class ODataQueryOptionsParser
 {
-    private readonly string _OdataOptionString;
+    public string OdataOptionString { get; }
     private readonly string _RegexPatter;
     private const string _EscapeSequence = "\\";
 
-    public OdataQueryOptionsParser(string odataOptionString)
+    public ODataQueryOptionsParser(string odataOptionString)
     {
-        _OdataOptionString = CreateStartingOdataOption(odataOptionString);
-        _RegexPatter = $"(.*)({_OdataOptionString})";
+        OdataOptionString = CreateStartingOdataOption(odataOptionString);
+        _RegexPatter = $"(.*)({OdataOptionString})";
     }
 
     public Parser<string> PartedQueryForSpecialOption =>
@@ -21,21 +21,21 @@ public class OdataQueryOptionsParser
         from filterQuery in Parse.CharExcept(
                 new List<char>
                 {
-                    OdataQueryCharacters._EndingCharterDollar,
-                    OdataQueryCharacters._EndingCharterAmperSand
+                    ODataQueryCharacters.EndingCharterDollar,
+                    ODataQueryCharacters.EndingCharterAmpersand
                 })
             .Many()
             .Text()
             .Token()
         from close in Parse.Chars(
-                OdataQueryCharacters._EndingCharterAmperSand,
-                OdataQueryCharacters._EndingCharterDollar)
+                ODataQueryCharacters.EndingCharterAmpersand,
+                ODataQueryCharacters.EndingCharterDollar)
             .Optional()
         select filterQuery;
 
     private static string CreateStartingOdataOption(string odataOptionString)
     {
         return
-            $"{_EscapeSequence}{OdataQueryCharacters._EndingCharterDollar}{odataOptionString}{OdataQueryCharacters._StartingCharacter}";
+            $"{_EscapeSequence}{ODataQueryCharacters.EndingCharterDollar}{odataOptionString}{ODataQueryCharacters.StartingCharacter}";
     }
 }

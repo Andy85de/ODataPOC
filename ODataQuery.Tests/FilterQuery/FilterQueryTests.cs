@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text.RegularExpressions;
+using FluentAssertions;
 using ODataQueryTests.Extensions;
 using ODataWithSprache.Grammar;
 using ODataWithSprache.TreeStructure;
@@ -16,7 +17,7 @@ public class FilterQueryTests
         TreeNode? rootNode = FilterQueryGrammar.RootNodeParsed.Parse(queryString);
         var queryResult = "Date ge datetime’2022-01-01T00:00:00 and Name eq Andreas'";
 
-        TreeNode rootNodeToCompare = new RootNode(OdataFilterOption.DollarFilter, queryResult);
+        TreeNode rootNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryResult);
 
         rootNode.Should().BeEquivalentTo(rootNodeToCompare, opt => opt.Excluding(o => o.Id).RespectingRuntimeTypes());
 
@@ -46,38 +47,13 @@ public class FilterQueryTests
         ((ExpressionNode)parser).RightSideExpression.Should().BeEquivalentTo(rightHandSide);
     }
 
-  /*  [Theory]
-    [InlineData(ODataExpressionCombinator.OrCombinator)]
-    [InlineData(ODataExpressionCombinator.AndCombinator)]
-    public void FilterQueryCreateBinaryExpressionNode(string expressionCombinator)
-    {
-        var queryString = $"Date lt datetime′2022-01-01T00:00:00′ {expressionCombinator} Name ne ′Andreas′";
-        TreeNode? binaryExpression = FilterQueryGrammar.BinaryExpressionNode.Parse(queryString);
-
-        var leftQuerySide = new ExpressionNode("Date", "2022-01-01T00:00:00", OperatorType.LessThenOperator);
-        var rightQuerySide = new ExpressionNode("Name", "Andreas", OperatorType.NotEqualsOperator);
-
-        var binaryExpressionTree = new BinaryExpression(
-            leftQuerySide,
-            rightQuerySide,
-            expressionCombinator.GetExpressionCombinator());
-
-        binaryExpression.Should()
-            .BeEquivalentTo(
-                binaryExpressionTree,
-                opt => opt.Excluding(o => o.Id)
-                    .Excluding(o => o.LeftChild.Id)
-                    .Excluding(o => o.RightChild.Id)
-                    .RespectingRuntimeTypes());
-    }*/
-
     [Fact]
     public void FilterRootNodeWithOneExpression()
     {
         var queryString = "$filter=Date eq datetime′2022-01-01T00:00:00′";
         var queryOption = "filter";
         
-        var resultQueryString = new OdataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+        var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
         
         var treeNode = FilterQueryGrammar.QueryParse.Parse(resultQueryString) ;
     }
@@ -85,12 +61,20 @@ public class FilterQueryTests
     [Fact]
     public void FilterRootNodeTree()
     {
-        var queryString = "$filter=Date eq datetime′2022-01-01T00:00:00′ and name eq 12";
+        var queryString = "$filter=Date ge datetime′2022-01-01T00:00:00′ and Name eq ′Andreas′ or Name eq ′Stefan′";
         var queryOption = "filter";
         
-        var resultQueryString = new OdataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+        var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
         
         var treeNode = FilterQueryGrammar.QueryParse.Parse(resultQueryString) ;
     }
+
     
+    [Fact]
+    public void CheckIfOrOrAndContainsTheString_should_not_match()
+    {
+        var queryString = "Date ge 123 or Date eq 456";
+        var noteparse = FilterQueryGrammar.CheckForOperator.Parse(queryString);
+        
+    }
 }
