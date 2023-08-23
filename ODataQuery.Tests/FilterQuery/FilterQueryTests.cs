@@ -23,12 +23,12 @@ public class FilterQueryTests
     }
 
     [Theory]
-    [InlineData(ODataExpressionOperators.LessEqualsOperator)]
-    [InlineData(ODataExpressionOperators.LessThenOperator)]
-    [InlineData(ODataExpressionOperators.EqualsOperator)]
-    [InlineData(ODataExpressionOperators.NotEqualsOperator)]
-    [InlineData(ODataExpressionOperators.GreaterThenOperator)]
-    [InlineData(ODataExpressionOperators.GreaterEqualsOperator)]
+    [InlineData(ODataLikeExpressionOperators.LessEqualsOperator)]
+    [InlineData(ODataLikeExpressionOperators.LessThenOperator)]
+    [InlineData(ODataLikeExpressionOperators.EqualsOperator)]
+    [InlineData(ODataLikeExpressionOperators.NotEqualsOperator)]
+    [InlineData(ODataLikeExpressionOperators.GreaterThenOperator)]
+    [InlineData(ODataLikeExpressionOperators.GreaterEqualsOperator)]
     public void FilterQueryCreateEqualsExpressionTests(string @operator)
     {
         var queryString = $"Date {@operator} datetime′2022-01-01T00:00:00′";
@@ -56,7 +56,7 @@ public class FilterQueryTests
             new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         FilterQueryGrammar.SetQueryString(queryString);
-        var treeNodeResult = FilterQueryGrammar.ParseFilterQuery.Parse(resultQueryString);
+        var treeNodeResult = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
 
         var expressionNode = new ExpressionNode("Date", "2022-01-01T00:00:00", OperatorType.EqualsOperator);
 
@@ -79,7 +79,7 @@ public class FilterQueryTests
         
         var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
         
-        var treeNode = FilterQueryGrammar.QueryParse.Parse(resultQueryString) ;
+        var treeNode = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString) ;
     }
 
     
@@ -88,7 +88,7 @@ public class FilterQueryTests
     {
         var queryString = "Date ge 123 or Date eq 456";
         FilterQueryGrammar.SetQueryString(queryString);
-        var noteparse = FilterQueryGrammar.QueryParse.Parse(queryString);
+        var noteparse = FilterQueryGrammar.QueryBinaryParser.Parse(queryString);
         
     }
 }
