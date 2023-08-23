@@ -41,7 +41,6 @@ public class ExpressionNodeComparer : IEqualityComparer<ExpressionNode>
             obj.Parent,
             obj.LeftSideExpression,
             (int)obj.Operator,
-            obj.RightSideExpression,
-            obj.ValueType);
+            obj.RightSideExpression);
     }
 } 

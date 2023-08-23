@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Antlr4.Runtime;
 using ODataWithSprache.TreeStructure;
 using Sprache;
 
@@ -7,12 +6,19 @@ namespace ODataWithSprache.Grammar;
 
 public sealed class FilterQueryGrammar
 {
+    private static string? _QueryString;
+    
+    internal static void SetQueryString(string? queryString)
+    {
+        _QueryString = queryString;
+    }
+    
     internal static readonly Parser<ExpressionCombinator> _binaryOperator = Parse
         .String(ODataExpressionCombinator.OrCombinator)
         .Return(ExpressionCombinator.Or)
         .Or(Parse.String(ODataExpressionCombinator.AndCombinator).Return(ExpressionCombinator.And));
 
-    internal static Parser<ExpressionCombinator> _binaryOperatorToParse =>
+    internal static Parser<ExpressionCombinator> BinaryOperatorToParse =>
          Parse.RegexMatch(new Regex($".*{ODataExpressionCombinator.OrCombinator}", RegexOptions.IgnoreCase))
         .Return(ExpressionCombinator.Or)
         .Or(
@@ -20,11 +26,11 @@ public sealed class FilterQueryGrammar
                .Return(ExpressionCombinator.And))
         .Or(Parse.Return(ExpressionCombinator.None));
 
-    internal static TreeNode? _currentTree = null;
-    internal static RootNode? _rootNode = null;
+    internal static TreeNode? _currentTree;
+    internal static RootNode? _rootNode;
 
-    internal static Parser<TreeNode> CheckForOperator =>
-        from operatorExpression in _binaryOperatorToParse.Preview()
+    public static Parser<TreeNode> ParseFilterQuery =>
+        from operatorExpression in BinaryOperatorToParse.Preview()
         from selectionTrying in operatorExpression.GetOrDefault() == ExpressionCombinator.None
             ? RootNodeParsed
             : QueryParse
@@ -34,14 +40,13 @@ public sealed class FilterQueryGrammar
         from expressionNodeString in ExpressionNode
         select CreateRootNodeExpression(
             expressionNodeString,
-            Parse.AnyChar.Many().Token().ToString(),
             ODataFilterOption.DollarFilter);
 
-    public static Parser<TreeNode> QueryParse =>
+    internal static Parser<TreeNode> QueryParse =>
         Parse.ChainOperator(
             _binaryOperator,
             ExpressionNode,
-            CreateLeaf);
+            CreateBinaryExpressionLeaf);
     
     internal static Parser<OperatorType> OperatorEnum =>
         Parse.String(ODataExpressionOperators.EqualsOperator)
@@ -85,7 +90,7 @@ public sealed class FilterQueryGrammar
         return new ExpressionNode(leftHandSide, rightHandType, operatorType);
     }
 
-    internal static TreeNode CreateLeaf(ExpressionCombinator op, TreeNode? left, TreeNode? right)
+    internal static TreeNode CreateBinaryExpressionLeaf(ExpressionCombinator op, TreeNode? left, TreeNode? right)
     {
         if (left == null)
         {
@@ -99,7 +104,7 @@ public sealed class FilterQueryGrammar
 
         if (_rootNode == null)
         {
-            _rootNode = new RootNode(ODataFilterOption.DollarFilter, "test");
+            _rootNode = new RootNode(ODataFilterOption.DollarFilter, _QueryString ?? string.Empty);
             _rootNode.LeftChild = new BinaryExpression(left, _rootNode, op);
             _currentTree = ((BinaryExpression)_rootNode.LeftChild).RightChild;
 
@@ -112,19 +117,19 @@ public sealed class FilterQueryGrammar
 
         return _rootNode;
     }
-
-    internal static TreeNode CreateRootNodeExpression(TreeNode? treeNode, string query, ODataFilterOption option)
+    
+    internal static TreeNode CreateRootNodeExpression(TreeNode? treeNode, ODataFilterOption option)
     {
         if (treeNode == null)
         {
             throw new ArgumentNullException(nameof(treeNode));
         }
 
-        var root = new RootNode(option, query)
+        _rootNode = new RootNode(option, _QueryString ?? string.Empty)
         {
             LeftChild = treeNode
         };
 
-        return root;
+        return _rootNode;
     }
 }

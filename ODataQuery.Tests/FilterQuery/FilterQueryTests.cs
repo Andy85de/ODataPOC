@@ -20,7 +20,6 @@ public class FilterQueryTests
         TreeNode rootNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryResult);
 
         rootNode.Should().BeEquivalentTo(rootNodeToCompare, opt => opt.Excluding(o => o.Id).RespectingRuntimeTypes());
-
     }
 
     [Theory]
@@ -52,10 +51,24 @@ public class FilterQueryTests
     {
         var queryString = "$filter=Date eq datetime′2022-01-01T00:00:00′";
         var queryOption = "filter";
-        
-        var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
-        
-        var treeNode = FilterQueryGrammar.QueryParse.Parse(resultQueryString) ;
+
+        string? resultQueryString =
+            new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+
+        FilterQueryGrammar.SetQueryString(queryString);
+        var treeNodeResult = FilterQueryGrammar.ParseFilterQuery.Parse(resultQueryString);
+
+        var expressionNode = new ExpressionNode("Date", "2022-01-01T00:00:00", OperatorType.EqualsOperator);
+
+        var treeNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryString)
+        {
+            LeftChild = expressionNode
+        };
+
+        treeNodeResult.Should()
+            .BeEquivalentTo(
+                treeNodeToCompare,
+                opt => opt.Excluding(t => t.Id).Excluding(t => t.LeftChild.Id).RespectingRuntimeTypes());
     }
     
     [Fact]
@@ -74,7 +87,8 @@ public class FilterQueryTests
     public void CheckIfOrOrAndContainsTheString_should_not_match()
     {
         var queryString = "Date ge 123 or Date eq 456";
-        var noteparse = FilterQueryGrammar.CheckForOperator.Parse(queryString);
+        FilterQueryGrammar.SetQueryString(queryString);
+        var noteparse = FilterQueryGrammar.QueryParse.Parse(queryString);
         
     }
 }

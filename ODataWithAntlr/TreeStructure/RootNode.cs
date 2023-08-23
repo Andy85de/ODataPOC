@@ -10,13 +10,13 @@ namespace ODataWithSprache.TreeStructure
 
         public ODataFilterOption _operatorType;
 
-        public string OriginalString;
+        public string _originalString;
 
 
         public RootNode(ODataFilterOption @operator, string originalQuery) : base(null)
         {
             _operatorType = @operator;
-            OriginalString = originalQuery;
+            _originalString = originalQuery;
         }
         
         private RootNode(string id) : base(null, id)
