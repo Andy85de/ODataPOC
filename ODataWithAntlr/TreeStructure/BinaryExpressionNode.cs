@@ -2,20 +2,20 @@
 
 namespace ODataWithSprache.TreeStructure
 {
-    public class BinaryExpression : TreeNodeWithTwoChildren
+    public class BinaryExpressionNode : TreeNodeWithTwoChildren
     {
         public ExpressionCombinator BinaryType { get; set; }
 
-        public BinaryExpression(TreeNode parent) : base(parent)
+        public BinaryExpressionNode(TreeNode parent) : base(parent)
         {
         }
 
-        public BinaryExpression(TreeNode left, TreeNode right, ExpressionCombinator op) : base(left,right)
+        public BinaryExpressionNode(TreeNode left, TreeNode right, ExpressionCombinator op) : base(left,right)
         {
             BinaryType = op;
         }
         
-        protected BinaryExpression(TreeNode parent, string id)
+        protected BinaryExpressionNode(TreeNode parent, string id)
             : base(parent, id)
         {
         }

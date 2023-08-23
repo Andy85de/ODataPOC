@@ -48,7 +48,7 @@ public sealed class FilterQueryGrammar
     /// <summary>
     ///     The current position of the tree.
     /// </summary>
-    internal static TreeNode? _currentTree;
+    internal static BinaryExpressionNode? _currentTree;
 
     /// <summary>
     ///     The root of the tree that will be returned.
@@ -63,7 +63,7 @@ public sealed class FilterQueryGrammar
         from operatorExpression in BinaryOperatorAsLookAheadParser.Preview()
         from selectionTrying in operatorExpression.GetOrDefault() == ExpressionCombinator.None
             ? RootNodeParsed
-            : QueryBinaryParser
+            : TreeParser
         select selectionTrying;
 
     /// <summary>
@@ -85,6 +85,10 @@ public sealed class FilterQueryGrammar
             _binaryOperator,
             ExpressionNode,
             CreateBinaryExpressionLeaf);
+
+    internal static Parser<TreeNode> TreeParser =>
+        from parser in QueryBinaryParser
+        select _rootNode;
 
     /// <summary>
     ///     The operator enum parser an operator and return the equivalent <see cref="OperatorType" />.
@@ -162,7 +166,7 @@ public sealed class FilterQueryGrammar
     /// <param name="binaryOperator">The binary operator that is used to combines the expressions.</param>
     /// <param name="leftExpression">The left hand expression-</param>
     /// <param name="rightExpression">The right hand expression.</param>
-    /// <returns>Returns a <see cref="BinaryExpression" />.</returns>
+    /// <returns>Returns a <see cref="BinaryExpressionNode" />.</returns>
     /// <exception cref="ArgumentNullException">
     ///     If the
     ///     <param name="leftExpression" />
@@ -187,18 +191,25 @@ public sealed class FilterQueryGrammar
 
         if (_rootNode == null)
         {
-            _rootNode = new RootNode(ODataFilterOption.DollarFilter, _QueryString ?? string.Empty);
-            _rootNode.LeftChild = new BinaryExpression(leftExpression, _rootNode, binaryOperator);
-            _currentTree = ((BinaryExpression)_rootNode.LeftChild).RightChild;
+            _rootNode = new RootNode(ODataFilterOption.DollarFilter, _QueryString ?? string.Empty)
+            {
+                LeftChild = new BinaryExpressionNode(leftExpression, rightExpression, binaryOperator)
+            };
 
-            return _rootNode;
+            _currentTree = (BinaryExpressionNode)_rootNode.LeftChild;
+
+            return _currentTree;
         }
 
-        var temp = new BinaryExpression(leftExpression, rightExpression, binaryOperator);
-        _currentTree = temp;
-        _currentTree = ((BinaryExpression)_currentTree).RightChild;
+        var binaryExpression = new BinaryExpressionNode(
+            _currentTree!.RightChild,
+            rightExpression,
+            binaryOperator);
 
-        return _rootNode;
+        _currentTree.RightChild = binaryExpression;
+        _currentTree = binaryExpression;
+
+        return _currentTree;
     }
 
     /// <summary>

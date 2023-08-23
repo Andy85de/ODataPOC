@@ -74,11 +74,11 @@ public class FilterQueryTests
     [Fact]
     public void FilterRootNodeTree()
     {
-        var queryString = "$filter=Date ge datetime′2022-01-01T00:00:00′ and Name eq ′Andreas′ or Name eq ′Stefan′";
+        var queryString = "$filter=Date ge datetime′2022-01-01T00:00:00′ and Name eq ′Andreas′ or Name eq ′Stefan′ or Name ne ′Stefan′";
         var queryOption = "filter";
         
         var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
-        
+        FilterQueryGrammar.SetQueryString(queryString);
         var treeNode = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString) ;
     }
 
@@ -89,6 +89,5 @@ public class FilterQueryTests
         var queryString = "Date ge 123 or Date eq 456";
         FilterQueryGrammar.SetQueryString(queryString);
         var noteparse = FilterQueryGrammar.QueryBinaryParser.Parse(queryString);
-        
     }
 }
