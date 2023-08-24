@@ -1,40 +1,34 @@
 ﻿using ODataWithSprache.Grammar;
 
-namespace ODataWithSprache.TreeStructure
+namespace ODataWithSprache.TreeStructure;
+
+public class RootNode : TreeNodeWithTwoChildren
 {
-    public class RootNode : TreeNodeWithTwoChildren
+    private RootNode(string originalString, TreeNode? parent) : base(parent)
     {
-        private RootNode() : base(null)
-        {
-        }
+        _originalString = originalString;
+    }
 
-        public ODataFilterOption _operatorType;
+    public ODataFilterOption _operatorType;
 
-        public string _originalString;
+    public string _originalString;
 
+    public RootNode(
+        ODataFilterOption @operator,
+        string originalQuery,
+        TreeNode? parent = null) : base(parent)
+    {
+        _operatorType = @operator;
+        _originalString = originalQuery;
+    }
 
-        public RootNode(ODataFilterOption @operator, string originalQuery) : base(null)
-        {
-            _operatorType = @operator;
-            _originalString = originalQuery;
-        }
-        
-        private RootNode(string id) : base(null, id)
-        {
-        }
+    private RootNode(string id, string originalString) : base(null, id)
+    {
+        _originalString = originalString;
+    }
 
-        public static RootNode Create(string id = null)
-        {
-            RootNode root = id == null ? new RootNode() : new RootNode(id);
-
-            root.Root = root;
-
-            return root;
-        }
-
-        public override TreeNode Clone(TreeNode newParent = null)
-        {
-            throw new NotImplementedException();
-        }
+    public override TreeNode Clone(TreeNode newParent = null)
+    {
+        throw new NotImplementedException();
     }
 }

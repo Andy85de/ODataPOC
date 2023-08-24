@@ -6,7 +6,7 @@ namespace ODataWithSprache.TreeStructure
     {
         public ExpressionCombinator BinaryType { get; set; }
 
-        public BinaryExpressionNode(TreeNode parent) : base(parent)
+        public BinaryExpressionNode(TreeNode? parent) : base(parent)
         {
         }
 
@@ -15,7 +15,7 @@ namespace ODataWithSprache.TreeStructure
             BinaryType = op;
         }
         
-        protected BinaryExpressionNode(TreeNode parent, string id)
+        protected BinaryExpressionNode(TreeNode? parent, string id)
             : base(parent, id)
         {
         }

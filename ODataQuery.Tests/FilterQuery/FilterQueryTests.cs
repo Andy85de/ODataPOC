@@ -13,9 +13,9 @@ public class FilterQueryTests
     [Fact]
     public void FilterStringObjectRootTest()
     {
-        const string queryString = "$filter=Date ge datetime’2022-01-01T00:00:00 and Name eq 'Andreas'";
+        const string queryString = "$filter=Date ge datetime'2022-01-01T00:00:00' and Name eq 'Andreas'";
         TreeNode? rootNode = FilterQueryGrammar.RootNodeParsed.Parse(queryString);
-        var queryResult = "Date ge datetime’2022-01-01T00:00:00 and Name eq Andreas'";
+        var queryResult = "Date ge datetime'2022-01-01T00:00:00' and Name eq 'Andreas'";
 
         TreeNode rootNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryResult);
 
@@ -90,4 +90,19 @@ public class FilterQueryTests
         FilterQueryGrammar.SetQueryString(queryString);
         var noteparse = FilterQueryGrammar.QueryBinaryParser.Parse(queryString);
     }
+
+    [Theory]
+    [InlineData("Customer/Bill/Id", "Customer.Bill.Id")]
+    [InlineData("Customer/Bill/Amount/Dollar/Prize","Customer.Bill.Amount.Dollar.Prize")]
+    [InlineData("Customer/Bill", "Customer.Bill")]
+    public void LeftHandSideNestedClause(string query, string result)
+    {
+        var queryParser = FilterQueryGrammar.LeftHandSideNested;
+
+        var resultQuery = queryParser.Parse(query);
+
+        resultQuery.Should().BeEquivalentTo(result);
+        
+    }
+    
 }

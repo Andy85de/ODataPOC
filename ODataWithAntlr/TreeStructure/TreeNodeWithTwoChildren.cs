@@ -7,7 +7,7 @@ public class TreeNodeWithTwoChildren: TreeNode
     public TreeNode RightChild { get; set; }
     
     
-    public TreeNodeWithTwoChildren(TreeNode parent) : base(parent)
+    public TreeNodeWithTwoChildren(TreeNode? parent) : base(parent)
     {
     }
 
@@ -17,7 +17,7 @@ public class TreeNodeWithTwoChildren: TreeNode
         RightChild = right;
     }
     
-    public TreeNodeWithTwoChildren(TreeNode parent, string id) : base(parent, id)
+    public TreeNodeWithTwoChildren(TreeNode? parent, string id) : base(parent, id)
     {
     }
 

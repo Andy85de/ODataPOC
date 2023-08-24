@@ -3,14 +3,18 @@ using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Extensions;
 
+/// <summary>
+/// Transform special enums to sql-strings.
+/// </summary>
 public static class EnumExtensions
 {
     /// <summary>
     ///     Transform the <see cref="OperatorType" /> to a sql operator.
     /// </summary>
     /// <param name="operatorType">The operator that should transform in the sql operator.</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentOutOfRangeException">If the
+    /// <returns>A strings that was mapped to the special sql operator.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///     If the
     ///     <param name="operatorType" />
     ///     is out of range.
     /// </exception>
@@ -30,12 +34,16 @@ public static class EnumExtensions
     }
 
     /// <summary>
-    /// 
+    ///     Transforms the <see cref="ExpressionCombinator" /> to a sql binary operator.
     /// </summary>
-    /// <param name="expressionCombinator"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static string ToSqlBinaryOperator(this ExpressionCombinator expressionCombinator)
+    /// <param name="expressionCombinator">The </param>
+    /// <returns>A strings that was mapped to the special sql binary operator.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///     If the
+    ///     <param name="expressionCombinator" />
+    ///     is out of range.
+    /// </exception>
+    public static string ToSqlOperator(this ExpressionCombinator expressionCombinator)
     {
         return expressionCombinator switch
         {
@@ -43,6 +51,23 @@ public static class EnumExtensions
             ExpressionCombinator.And => "AND",
             ExpressionCombinator.Or => "OR",
             _ => throw new ArgumentOutOfRangeException(nameof(expressionCombinator), expressionCombinator, null)
+        };
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="option"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static string ToSqlOperator(this ODataFilterOption option)
+    {
+        return option switch
+        {
+            ODataFilterOption.None => "Note",
+            ODataFilterOption.DollarFilter => "WHERE",
+            ODataFilterOption.DollarOrderBy => "ORDERBY",
+            _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
     }
 }

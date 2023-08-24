@@ -38,17 +38,17 @@ public sealed class FilterQueryGrammar
     ///     If no binary expression exists, the tree has only a root with one leaf.
     /// </summary>
     internal static Parser<ExpressionCombinator> BinaryOperatorAsLookAheadParser =>
-        Parse.RegexMatch(new Regex($".*{ODataLikeExpressionCombinator.OrCombinator}", RegexOptions.IgnoreCase))
+        Parse.RegexMatch(new Regex($".*\\s+{ODataLikeExpressionCombinator.OrCombinator}\\s+", RegexOptions.IgnoreCase))
             .Return(ExpressionCombinator.Or)
             .Or(
-                Parse.RegexMatch(new Regex($".*{ODataLikeExpressionCombinator.AndCombinator}", RegexOptions.IgnoreCase))
+                Parse.RegexMatch(new Regex($".*\\s+{ODataLikeExpressionCombinator.AndCombinator}\\s+", RegexOptions.IgnoreCase))
                     .Return(ExpressionCombinator.And))
             .Or(Parse.Return(ExpressionCombinator.None));
 
     /// <summary>
-    ///     The current position of the tree.
+    ///     The current position in the tree.
     /// </summary>
-    internal static BinaryExpressionNode? _currentTree;
+    internal static BinaryExpressionNode? _currentNode;
 
     /// <summary>
     ///     The root of the tree that will be returned.
@@ -86,6 +86,9 @@ public sealed class FilterQueryGrammar
             ExpressionNode,
             CreateBinaryExpressionLeaf);
 
+    /// <summary>
+    ///     Parses the string and return the root node of the tree.
+    /// </summary>
     internal static Parser<TreeNode> TreeParser =>
         from parser in QueryBinaryParser
         select _rootNode;
@@ -115,13 +118,22 @@ public sealed class FilterQueryGrammar
     /// </summary>
     internal static Parser<string> InnerQuotedValue =>
         from dataType in Parse.Regex("[A-Za-z]*").Text().Token()
-        from openQuotedValue in Parse.Char(QuotedCharacter.SingleQuotedCharacter)
-        from innerValue in Parse.CharExcept(QuotedCharacter.SingleQuotedCharacter)
+        from openQuotedValue in Parse.Chars(
+            QuotedCharacter.SingleQuotedCharacter,
+            QuotedCharacter.SingleQuotedCharacterForStrings)
+        from innerValue in Parse.CharExcept(
+                new List<char>
+                {
+                    QuotedCharacter.SingleQuotedCharacter,
+                    QuotedCharacter.SingleQuotedCharacterForStrings
+                })
             .Many()
             .Text()
             .Named("QuoatedValue(right-side)")
             .Token()
-        from closeQuotedValue in Parse.Char(QuotedCharacter.SingleQuotedCharacter)
+        from closeQuotedValue in Parse.Chars(
+            QuotedCharacter.SingleQuotedCharacter,
+            QuotedCharacter.SingleQuotedCharacterForStrings)
         select innerValue;
 
     /// <summary>
@@ -132,12 +144,35 @@ public sealed class FilterQueryGrammar
         from innerValueWithoutQuotation in Parse.Number.Text().Token().Named("InnerNotQuotedValue(right-side)")
         select innerValueWithoutQuotation;
 
+
     /// <summary>
-    ///     The left hand side of an expression.
+    ///     The left hand side of an expression. Here we check if the left hand side
+    ///     references nested attributes/value.
     /// </summary>
     internal static Parser<string> LeftHandSide =>
-        Parse.Regex("[A-Za-z]+").Text().Named("LeftHandSideExpression").Token();
+        from checkForNestedValues in Parse.Regex("/+").Preview()
+        from parserClause in checkForNestedValues.GetOrDefault() == string.Empty
+            ? LeftHandNotNested
+            : LeftHandSideNested
+        select parserClause;
 
+    /// <summary>
+    ///     The left hand side is not nested an can be parsed.
+    /// </summary>
+    internal static Parser<string> LeftHandNotNested =>
+        Parse.Regex("[A-Za-z]+").Text().Token().Named("LeftHandSideExpressionNotNested");
+
+    /// <summary>
+    ///     The left hand side is nested and has be parsed. The "/"
+    ///     will be replaced through the "." .
+    /// </summary>
+    internal static Parser<string> LeftHandSideNested =>
+        Parse.RegexMatch("[a-zA-z/]+")
+            .Select(p => p.Groups[0].Value.Replace("/","."))
+            .Text()
+            .Token()
+            .Named("LeftHandSideExpressionNested");
+        
     /// <summary>
     ///     An Expression that consists out of a left and right-hand-side an is combined with an operator.
     /// </summary>
@@ -196,20 +231,20 @@ public sealed class FilterQueryGrammar
                 LeftChild = new BinaryExpressionNode(leftExpression, rightExpression, binaryOperator)
             };
 
-            _currentTree = (BinaryExpressionNode)_rootNode.LeftChild;
+            _currentNode = (BinaryExpressionNode)_rootNode.LeftChild;
 
-            return _currentTree;
+            return _currentNode;
         }
 
-        var binaryExpression = new BinaryExpressionNode(
-            _currentTree!.RightChild,
+        var binaryExpressionTree = new BinaryExpressionNode(
+            _currentNode!.RightChild,
             rightExpression,
             binaryOperator);
 
-        _currentTree.RightChild = binaryExpression;
-        _currentTree = binaryExpression;
+        _currentNode.RightChild = binaryExpressionTree;
+        _currentNode = binaryExpressionTree;
 
-        return _currentTree;
+        return _currentNode;
     }
 
     /// <summary>
@@ -232,5 +267,11 @@ public sealed class FilterQueryGrammar
         };
 
         return _rootNode;
+    }
+
+    internal static void Clear()
+    {
+        _rootNode = null;
+        _currentNode = null;
     }
 }

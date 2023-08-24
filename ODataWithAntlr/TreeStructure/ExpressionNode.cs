@@ -8,7 +8,7 @@ public class ExpressionNode : TreeNode
     public OperatorType Operator { get; set; }
     public string RightSideExpression { get; set; }
 
-    public ExpressionNode(TreeNode parent, OperatorType operatorType,string leftSideExpression, string rightSideExpression)
+    public ExpressionNode(TreeNode? parent, OperatorType operatorType,string leftSideExpression, string rightSideExpression)
         : base(parent)
     {
         LeftSideExpression = leftSideExpression;
@@ -27,7 +27,7 @@ public class ExpressionNode : TreeNode
     }
 
     protected ExpressionNode(
-        TreeNode parent,
+        TreeNode? parent,
         string id,
         string leftSideExpression,
         string rightSideExpression)

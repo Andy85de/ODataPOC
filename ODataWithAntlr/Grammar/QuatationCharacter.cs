@@ -9,4 +9,6 @@ public class QuotedCharacter
     ///     Single quotation that is used to recognize a value.
     /// </summary>
     public const char SingleQuotedCharacter = '′';
+
+    public const char SingleQuotedCharacterForStrings = '\'';
 }
