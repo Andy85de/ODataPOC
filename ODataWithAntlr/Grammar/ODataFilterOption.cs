@@ -5,6 +5,9 @@
 /// </summary>
 public enum ODataFilterOption
 {
+    /// <summary>
+    ///     If none operator has been chosen.
+    /// </summary>
     None,
 
     /// <summary>

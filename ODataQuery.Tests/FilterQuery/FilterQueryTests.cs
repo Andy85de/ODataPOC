@@ -9,7 +9,6 @@ namespace ODataQueryTests.FilterQuery;
 
 public class FilterQueryTests
 {
-   
     [Fact]
     public void FilterStringObjectRootTest()
     {
@@ -42,7 +41,7 @@ public class FilterQueryTests
     [InlineData("Id eq 123", "123")]
     public void FilterQueryParseInnerValue(string query, string rightHandSide)
     {
-        var parser = FilterQueryGrammar.ExpressionNode.Parse(query);
+        TreeNode? parser = FilterQueryGrammar.ExpressionNode.Parse(query);
         ((ExpressionNode)parser).RightSideExpression.Should().BeEquivalentTo(rightHandSide);
     }
 
@@ -56,7 +55,7 @@ public class FilterQueryTests
             new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         FilterQueryGrammar.SetQueryString(queryString);
-        var treeNodeResult = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
+        TreeNode? treeNodeResult = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
 
         var expressionNode = new ExpressionNode("Date", "2022-01-01T00:00:00", OperatorType.EqualsOperator);
 
@@ -70,39 +69,40 @@ public class FilterQueryTests
                 treeNodeToCompare,
                 opt => opt.Excluding(t => t.Id).Excluding(t => t.LeftChild.Id).RespectingRuntimeTypes());
     }
-    
+
     [Fact]
     public void FilterRootNodeTree()
     {
-        var queryString = "$filter=Date ge datetime′2022-01-01T00:00:00′ and Name eq ′Andreas′ or Name eq ′Stefan′ or Name ne ′Stefan′";
+        var queryString =
+            "$filter=Date ge datetime′2022-01-01T00:00:00′ and Name eq 'Andreas' or Name eq 'Stefan' or Name ne 'Stefan'";
+
         var queryOption = "filter";
-        
-        var resultQueryString = new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+
+        string? resultQueryString =
+            new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+
         FilterQueryGrammar.SetQueryString(queryString);
-        var treeNode = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString) ;
+        TreeNode? treeNode = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
     }
 
-    
     [Fact]
     public void CheckIfOrOrAndContainsTheString_should_not_match()
     {
         var queryString = "Date ge 123 or Date eq 456";
         FilterQueryGrammar.SetQueryString(queryString);
-        var noteparse = FilterQueryGrammar.QueryBinaryParser.Parse(queryString);
+        TreeNode? noteparse = FilterQueryGrammar.QueryBinaryParser.Parse(queryString);
     }
 
     [Theory]
     [InlineData("Customer/Bill/Id", "Customer.Bill.Id")]
-    [InlineData("Customer/Bill/Amount/Dollar/Prize","Customer.Bill.Amount.Dollar.Prize")]
+    [InlineData("Customer/Bill/Amount/Dollar/Prize", "Customer.Bill.Amount.Dollar.Prize")]
     [InlineData("Customer/Bill", "Customer.Bill")]
     public void LeftHandSideNestedClause(string query, string result)
     {
-        var queryParser = FilterQueryGrammar.LeftHandSideNested;
+        Parser<string> queryParser = FilterQueryGrammar.LeftHandSideNested;
 
-        var resultQuery = queryParser.Parse(query);
+        string? resultQuery = queryParser.Parse(query);
 
         resultQuery.Should().BeEquivalentTo(result);
-        
     }
-    
 }

@@ -1,10 +1,9 @@
 ﻿using ODataWithSprache.Grammar;
-using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Extensions;
 
 /// <summary>
-/// Transform special enums to sql-strings.
+///     Transform special enums to sql-strings.
 /// </summary>
 public static class EnumExtensions
 {
@@ -24,7 +23,7 @@ public static class EnumExtensions
         {
             OperatorType.None => "none",
             OperatorType.EqualsOperator => "=",
-            OperatorType.NotEqualsOperator => "<>",
+            OperatorType.NotEqualsOperator => "!=",
             OperatorType.GreaterThenOperator => ">",
             OperatorType.GreaterEqualsOperator => ">=",
             OperatorType.LessThenOperator => "<",
@@ -55,16 +54,16 @@ public static class EnumExtensions
     }
 
     /// <summary>
-    /// 
+    ///     The sql operator is used to transform operator in the right
+    ///     way.
     /// </summary>
-    /// <param name="option"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="option">The operator that is used to filter a query.</param>
+    /// <returns>The right SQL-Operator.</returns>
     public static string ToSqlOperator(this ODataFilterOption option)
     {
         return option switch
         {
-            ODataFilterOption.None => "Note",
+            ODataFilterOption.None => "None",
             ODataFilterOption.DollarFilter => "WHERE",
             ODataFilterOption.DollarOrderBy => "ORDERBY",
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)

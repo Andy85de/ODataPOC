@@ -77,8 +77,8 @@ public sealed class FilterQueryGrammar
             ODataFilterOption.DollarFilter);
 
     /// <summary>
-    ///  The parser combines the one or more expressions with a binary operator
-    ///  (current supported operators are "and" and "or" operators).
+    ///     The parser combines the one or more expressions with a binary operator
+    ///     (current supported operators are "and" and "or" operators).
     /// </summary>
     internal static Parser<TreeNode> QueryBinaryParser =>
         Parse.ChainOperator(
@@ -192,6 +192,16 @@ public sealed class FilterQueryGrammar
     /// <returns>Returns an <see cref="ExpressionNode" />.</returns>
     internal static TreeNode CreateExpressionNode(string leftHandSide, string rightHandType, OperatorType operatorType)
     {
+        if (string.IsNullOrWhiteSpace(leftHandSide))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(leftHandSide));
+        }
+
+        if (string.IsNullOrWhiteSpace(rightHandType))
+        {
+            throw new ArgumentException("Value cannot be null or whitespace.", nameof(rightHandType));
+        }
+
         return new ExpressionNode(leftHandSide, rightHandType, operatorType);
     }
 
@@ -269,6 +279,9 @@ public sealed class FilterQueryGrammar
         return _rootNode;
     }
 
+    /// <summary>
+    ///     The method is needed for the tests.
+    /// </summary>
     internal static void Clear()
     {
         _rootNode = null;

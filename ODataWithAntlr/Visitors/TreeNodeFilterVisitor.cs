@@ -4,12 +4,33 @@ using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Visitors;
 
-public class TreeNodeVisitorString : TreeNodeVisitorBase<string>
+/// <summary>
+///     An implementation of the <see cref="TreeNodeVisitorBase{TResult}" /> visitor class.
+/// </summary>
+public class TreeNodeFilterVisitor : TreeNodeVisitorBase<string>
 {
-    protected override string VisitBinaryExpressionNode(
-        BinaryExpressionNode expression,
-        params object[] optionalParameters)
+    private readonly ILogger<TreeNodeFilterVisitor> _Logger;
+
+    public TreeNodeFilterVisitor(ILogger<TreeNodeFilterVisitor> logger)
     {
+        _Logger = logger;
+    }
+
+    public TreeNodeFilterVisitor()
+    {
+    }
+    
+
+    /// <inheritdoc/>
+    protected override string VisitBinaryExpressionNode(
+        BinaryExpressionNode?  expression)
+    {
+        if (expression == null)
+        {
+            throw new ArgumentNullException(nameof(expression));
+        }
+        
+        
         if (expression.RightChild.GetType() == typeof(ExpressionNode))
         {
             return string.Join(
@@ -26,8 +47,14 @@ public class TreeNodeVisitorString : TreeNodeVisitorBase<string>
             $"{VisitBinaryExpressionNode((BinaryExpressionNode)expression.RightChild)}");
     }
 
-    protected override string VisitExpressionNode(ExpressionNode expression, params object[] optionalParameters)
+    /// <inheritdoc/>
+    protected override string VisitExpressionNode(ExpressionNode expression)
     {
+        if (expression == null)
+        {
+            throw new ArgumentNullException(nameof(expression));
+        }
+        
         return string.Join(
             " ",
             $"{expression.LeftSideExpression}",
@@ -35,8 +62,14 @@ public class TreeNodeVisitorString : TreeNodeVisitorBase<string>
             $"{ParserHelper.ParserRightHandSide(expression.RightSideExpression)}");
     }
 
-    public override string Visit(RootNode root)
+    /// <inheritdoc/>
+    public override string Visit(RootNode? root)
     {
+        if (root == null)
+        {
+            throw new ArgumentNullException(nameof(root));
+        }
+        
         if (root.LeftChild.GetType() == typeof(ExpressionNode))
         {
             return string.Join(
