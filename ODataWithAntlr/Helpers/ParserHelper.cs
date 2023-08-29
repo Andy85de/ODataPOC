@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-
-namespace ODataWithSprache.Helpers;
+﻿namespace ODataWithSprache.Helpers;
 
 /// <summary>
 ///     The parser helper class to parser the right-hand-side for datetime,

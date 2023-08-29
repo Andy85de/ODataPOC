@@ -1,9 +1,53 @@
-﻿namespace ODataWithSprache.Grammar;
+﻿using System.Linq.Expressions;
+using ODataWithSprache.Models;
+using Sprache;
+
+namespace ODataWithSprache.Grammar;
 
 /// <summary>
-///     The oderBy query grammar is used to parse a oderby-Operation string and return
-///     a linq expression that can be used to order the result in a proper way.
+///     The oderBy query grammar is used to parse a oderBy-Operation string and return
+///     a list of <see cref="SortedProperty" /> that can be used to order the result in a proper way.
 /// </summary>
-public class OderByQueryGrammar
+public sealed class OderByQueryGrammar
 {
+    /// <summary>
+    ///     Gets the sort of the property. The sort order
+    ///     can be descending or ascending. If the sort order is missing
+    ///     the default value is descending.
+    /// </summary>
+    internal Parser<SortDirection> SortOrder =>
+        Parse.IgnoreCase("asc")
+            .Return(SortDirection.Ascending)
+            .Or(Parse.IgnoreCase("desc").Return(SortDirection.Descending))
+            .Or(Parse.Return(SortDirection.Descending))
+            .Named("SorteOrder ASC|DESC");
+
+    /// <summary>
+    ///     Get the property for which the sorting should be made.
+    /// </summary>
+    internal Parser<string> Property => Parse.Regex("[A-Za-z]*").Text().Named("OderByValueName");
+
+    /// <summary>
+    ///     The end of the query or the next property that will be parsed.
+    /// </summary>
+    internal Parser<string> EndOfProperty =>
+        Parse.IgnoreCase(",").Or(Parse.LineTerminator.End()).Text().Named("EndOfProperty(',') or EndOfQuery");
+
+    /// <summary>
+    ///     The whole sorted object that will be parsed.
+    ///     It consists out of a property and a sort oder.
+    /// </summary>
+    internal Parser<SortedProperty> SortedPropertyParser =>
+        from sortProperty in Property.Token()
+        from sortDirection in SortOrder.Token()
+        from separator in EndOfProperty.Token()
+        select new SortedProperty(sortProperty, sortDirection);
+
+    /// <summary>
+    ///     Parses the query and generate at least a list with one
+    ///     <see cref="SortedProperty" /> item.
+    /// </summary>
+    public Parser<List<SortedProperty>> OrderByListQuery =>
+        from sorted in SortedPropertyParser.AtLeastOnce().Named("SortedProperty")
+        select sorted.ToList();
 }
