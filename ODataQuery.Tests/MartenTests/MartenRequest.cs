@@ -40,8 +40,6 @@ public class MartenRequest
                                                                                                 + "ORDER BY data->>'SortedPropertyStringId asc',"
                                                                                                 + "data ->> 'SortedPropertyIntId asc',"
                                                                                                 + "data ->> 'CreatedAt' ");
-        
-
     }
 
 

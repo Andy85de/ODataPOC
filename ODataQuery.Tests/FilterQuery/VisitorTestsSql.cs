@@ -6,7 +6,7 @@ using Sprache;
 
 namespace ODataQueryTests.FilterQuery;
 
-public class VisitorTests
+public class VisitorTestsSql
 {
     public static List<object[]> _filterTestArguments = new List<object[]>
     {
@@ -49,7 +49,7 @@ public class VisitorTests
         FilterQueryGrammar.SetQueryString(optionParserFilter);
         TreeNode? nodeTree = FilterQueryGrammar.QueryFilterParser.Parse(optionParserFilter);
 
-        var sqlVisitor = new TreeNodeFilterVisitor();
+        var sqlVisitor = new TreeNodeSQLFilterVisitor();
         string sqlString = sqlVisitor.Visit((RootNode)nodeTree);
 
         FilterQueryGrammar.Clear();

@@ -25,8 +25,11 @@ public static class OderByQueryExtension
 
         foreach (SortedProperty property in oderByProperties)
         {
-            orderByQuery.Append(
-                $" {variable} {_AssignOperator} \'{property.PropertyName} {(property.Sorted == SortDirection.Ascending ? "asc" : "desc")}\',");
+            if (!string.IsNullOrWhiteSpace(property.PropertyName))
+            {
+               orderByQuery.Append(
+                   $" {variable} {_AssignOperator} \'{property.PropertyName} {(property.Sorted == SortDirection.Ascending ? "asc" : "desc")}\',");             
+            }
         }
 
         // clean the last "," after the loop has ended

@@ -4,23 +4,10 @@ using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Visitors;
 
-/// <summary>
-///     An implementation of the <see cref="TreeNodeVisitorBase{TResult}" /> visitor class.
-/// </summary>
-public class TreeNodeFilterVisitor : TreeNodeVisitorBase<string>
+public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBase<string>
 {
-    private readonly ILogger<TreeNodeFilterVisitor> _Logger;
-
-    public TreeNodeFilterVisitor(ILogger<TreeNodeFilterVisitor> logger)
-    {
-        _Logger = logger;
-    }
-
-    public TreeNodeFilterVisitor()
-    {
-    }
+    private const string _AssignOperator = "->>";
     
-
     /// <inheritdoc/>
     protected override string VisitBinaryExpressionNode(
         BinaryExpressionNode?  expression)
@@ -57,14 +44,21 @@ public class TreeNodeFilterVisitor : TreeNodeVisitorBase<string>
         
         return string.Join(
             " ",
-            $"{expression.LeftSideExpression}",
+            $"'{expression.LeftSideExpression}'",
             $"{expression.Operator.ToSqlOperator()}",
             $"{ParserHelper.ParserRightHandSide(expression.RightSideExpression)}");
     }
 
     /// <inheritdoc/>
-    public override string Visit(RootNode? root)
+    public override string Visit(RootNode? root, params string [] optionalParameter)
     {
+        string variable = optionalParameter[0];
+
+        if (string.IsNullOrWhiteSpace(variable))
+        {
+            throw new ArgumentException("No variable was defined for the where clause.");
+        }
+        
         if (root == null)
         {
             throw new ArgumentNullException(nameof(root));
@@ -75,12 +69,14 @@ public class TreeNodeFilterVisitor : TreeNodeVisitorBase<string>
             return string.Join(
                 " ",
                 $"{root._operatorType.ToSqlOperator()}",
+                $"{variable} {_AssignOperator}",
                 $"{VisitExpressionNode((ExpressionNode)root.LeftChild)}");
         }
 
         return string.Join(
             " ",
             $"{root._operatorType.ToSqlOperator()}",
+            $"{variable} {_AssignOperator}",
             $"{VisitBinaryExpressionNode((BinaryExpressionNode)root.LeftChild)}");
     }
 }

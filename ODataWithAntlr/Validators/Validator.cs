@@ -3,9 +3,9 @@ using Microsoft.Net.Http.Headers;
 
 namespace ODataWithSprache.Validators;
 
-public static class Validator
+internal static class ValidatorHelper
 {
-    private static bool ValidatePropertyInResult<TResult>(string property, List<Type>? dataTypeAllowed = null)
+    internal static bool ValidatePropertyInResult<TResult>(string property, List<Type>? dataTypeAllowed = null)
     {
         if (string.IsNullOrWhiteSpace(property))
         {
@@ -29,7 +29,4 @@ public static class Validator
             && propertiesNames.Contains(property)
             && dataTypeAllowed.Contains(propertyDateType);
     }
-    
-    
-    
 }

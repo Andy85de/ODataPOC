@@ -37,10 +37,11 @@ public abstract class TreeNodeVisitorBase<TResult>
     ///     Describes how a <see cref="RootNode" /> node should be visited.
     /// </summary>
     /// <param name="root">The <see cref="RootNode" /> that should be visited.</param>
+    /// <param name="optionalParameter">Optional parameter that are seperated though a comma.</param>
     /// <returns>
     ///     A
     ///     <typeparam name="TResult" />
     ///     that will be created after visiting the <see cref="RootNode" />.
     /// </returns>
-    public abstract TResult Visit(RootNode root);
+    public abstract TResult Visit(RootNode root,  params string [] optionalParameter );
 }
