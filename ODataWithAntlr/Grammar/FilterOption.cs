@@ -3,7 +3,7 @@
 /// <summary>
 ///     Filter options that are currently available.
 /// </summary>
-public enum ODataFilterOption
+public enum FilterOption
 {
     /// <summary>
     ///     If none operator has been chosen.

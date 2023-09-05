@@ -38,4 +38,60 @@ public static class ParserHelper
             ? $"'{dateValue.ToUniversalTime()}'"
             : $"'{rightHandSide}'";
     }
+    
+    public static object ParseAndReturnRightObject(string rightHandSide)
+    {
+        if (string.IsNullOrWhiteSpace(rightHandSide))
+        {
+            throw new ArgumentException(null, nameof(rightHandSide));
+        }
+
+        if (int.TryParse(rightHandSide, out int intResult))
+        {
+            return intResult;
+        }
+
+        if (double.TryParse(rightHandSide, out double doubleResult))
+        {
+            return doubleResult;
+        }
+
+        if(DateTime.TryParse(rightHandSide, out DateTime dateValue))
+        {
+            return dateValue;
+        }
+
+        return rightHandSide;
+    }
+
+    
+    internal static Type GetRightHandType(string rightHandSide)
+    {
+        if (string.IsNullOrWhiteSpace(rightHandSide))
+        {
+            throw new ArgumentException(null, nameof(rightHandSide));
+        }
+
+        if (int.TryParse(rightHandSide, out int _))
+        {
+            return typeof(int);
+        }
+
+        if (double.TryParse(rightHandSide, out double _))
+        {
+            return typeof(double);
+        }
+
+        if (float.TryParse(rightHandSide, out float _))
+        {
+            return typeof(float);
+        }
+
+        if (DateTime.TryParse(rightHandSide, out DateTime _))
+        {
+            return typeof(DateTime);
+        }
+
+        return typeof(string);
+    }
 }

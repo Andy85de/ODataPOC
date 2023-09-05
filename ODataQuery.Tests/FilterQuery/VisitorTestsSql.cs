@@ -44,7 +44,7 @@ public class VisitorTestsSql
     public void Create_easy_Sql_query_Should_work(string filterQuery, string resultSqlQuery)
     {
         string? optionParserFilter =
-            new ODataQueryOptionsParser("filter").PartedQueryForSpecialOption.Parse(filterQuery);
+            new QueryOptionsParser("filter").PartedQueryForSpecialOption.Parse(filterQuery);
 
         FilterQueryGrammar.SetQueryString(optionParserFilter);
         TreeNode? nodeTree = FilterQueryGrammar.QueryFilterParser.Parse(optionParserFilter);

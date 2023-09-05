@@ -11,8 +11,6 @@ namespace ODataQueryTests.OderByTests;
 
 public class OderByTests
 {
-    
-
     public static List<object[]> _testArgumentsForOnePropertyData = new List<object[]>
     {
         new object[] { "BaseRate asc", new SortedProperty("BaseRate", SortDirection.Ascending) },

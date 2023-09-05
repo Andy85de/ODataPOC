@@ -9,12 +9,12 @@ public class RootNode : TreeNodeWithTwoChildren
         _originalString = originalString;
     }
 
-    public ODataFilterOption _operatorType;
+    public FilterOption _operatorType;
 
     public string _originalString;
 
     public RootNode(
-        ODataFilterOption @operator,
+        FilterOption @operator,
         string originalQuery,
         TreeNode? parent = null) : base(parent)
     {

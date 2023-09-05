@@ -16,18 +16,18 @@ public class FilterQueryTests
         TreeNode? rootNode = FilterQueryGrammar.RootNodeParsed.Parse(queryString);
         var queryResult = "Date ge datetime'2022-01-01T00:00:00' and Name eq 'Andreas'";
 
-        TreeNode rootNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryResult);
+        TreeNode rootNodeToCompare = new RootNode(FilterOption.DollarFilter, queryResult);
 
         rootNode.Should().BeEquivalentTo(rootNodeToCompare, opt => opt.Excluding(o => o.Id).RespectingRuntimeTypes());
     }
 
     [Theory]
-    [InlineData(ODataLikeExpressionOperators.LessEqualsOperator)]
-    [InlineData(ODataLikeExpressionOperators.LessThenOperator)]
-    [InlineData(ODataLikeExpressionOperators.EqualsOperator)]
-    [InlineData(ODataLikeExpressionOperators.NotEqualsOperator)]
-    [InlineData(ODataLikeExpressionOperators.GreaterThenOperator)]
-    [InlineData(ODataLikeExpressionOperators.GreaterEqualsOperator)]
+    [InlineData(ExpressionOperators.LessEqualsOperator)]
+    [InlineData(ExpressionOperators.LessThenOperator)]
+    [InlineData(ExpressionOperators.EqualsOperator)]
+    [InlineData(ExpressionOperators.NotEqualsOperator)]
+    [InlineData(ExpressionOperators.GreaterThenOperator)]
+    [InlineData(ExpressionOperators.GreaterEqualsOperator)]
     public void FilterQueryCreateEqualsExpressionTests(string @operator)
     {
         var queryString = $"Date {@operator} datetime′2022-01-01T00:00:00′";
@@ -52,14 +52,14 @@ public class FilterQueryTests
         var queryOption = "filter";
 
         string? resultQueryString =
-            new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+            new QueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         FilterQueryGrammar.SetQueryString(queryString);
         TreeNode? treeNodeResult = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
 
         var expressionNode = new ExpressionNode("Date", "2022-01-01T00:00:00", OperatorType.EqualsOperator);
 
-        var treeNodeToCompare = new RootNode(ODataFilterOption.DollarFilter, queryString)
+        var treeNodeToCompare = new RootNode(FilterOption.DollarFilter, queryString)
         {
             LeftChild = expressionNode
         };
@@ -79,7 +79,7 @@ public class FilterQueryTests
         var queryOption = "filter";
 
         string? resultQueryString =
-            new ODataQueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
+            new QueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
 
         FilterQueryGrammar.SetQueryString(queryString);
         TreeNode? treeNode = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);

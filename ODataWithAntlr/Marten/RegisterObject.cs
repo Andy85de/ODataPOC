@@ -1,8 +1,7 @@
 ﻿using Marten;
-using ODataQueryTests.MartenTests.Models;
-using ODataQueryTests.OderByTests;
+using ODataWithSprache.Models;
 
-namespace ODataQueryTests.MartenTests;
+namespace ODataWithSprache.Marten;
 
 public class RegisterObject : MartenRegistry
 {

@@ -1,9 +1,9 @@
 namespace ODataWithSprache.Grammar;
 
 /// <summary>
-///     The combinator operator that can connect expressions
+///     The combinator operator that can connect expressions.
 /// </summary>
-public static class ODataLikeExpressionCombinator
+public static class FilterExpressionCombinator
 {
     /// <summary>
     ///     The and combinator to connect two expressions.

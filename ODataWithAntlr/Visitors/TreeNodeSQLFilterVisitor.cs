@@ -6,6 +6,7 @@ namespace ODataWithSprache.Visitors;
 
 /// <summary>
 ///     An implementation of the <see cref="TreeNodeVisitorBase{TResult}" /> visitor class.
+///     for sql.
 /// </summary>
 public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBase<string>
 {
@@ -20,10 +21,9 @@ public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBase<string>
     {
     }
     
-
     /// <inheritdoc/>
     protected override string VisitBinaryExpressionNode(
-        BinaryExpressionNode?  expression)
+        BinaryExpressionNode?  expression, params object[] optionalParameter)
     {
         if (expression == null)
         {
@@ -48,7 +48,7 @@ public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBase<string>
     }
 
     /// <inheritdoc/>
-    protected override string VisitExpressionNode(ExpressionNode expression)
+    protected override string VisitExpressionNode(ExpressionNode expression, params object[] optionalParameter)
     {
         if (expression == null)
         {
@@ -63,7 +63,7 @@ public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBase<string>
     }
 
     /// <inheritdoc/>
-    public override string Visit(RootNode root, params string[] optionalParameter )
+    public override string Visit(RootNode root, params object[] optionalParameter )
     {
         if (root == null)
         {

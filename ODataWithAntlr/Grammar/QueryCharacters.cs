@@ -3,7 +3,7 @@
 /// <summary>
 ///     Starting and ending character for a query.
 /// </summary>
-public class ODataQueryCharacters
+public class QueryCharacters
 {
     /// <summary>
     ///     The character indicates that the filter string has started.

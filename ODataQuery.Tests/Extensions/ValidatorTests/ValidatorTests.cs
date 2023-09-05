@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using ODataQueryTests.Validator.Models;
+using ODataQueryTests.ValidatorTests.Models;
 using ODataWithSprache.Validators;
 
 namespace ODataQueryTests.ValidatorTests;

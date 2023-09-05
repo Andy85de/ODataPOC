@@ -38,13 +38,13 @@ public class VisitorBSqlTests
             "WHERE data ->> 'Time' = 'PM' OR 'Name' = 'Abdrachman' OR 'Amount.Id' = 15789"
         }
     };
-    
+
     [Theory]
-    [MemberData(nameof(_filterTestArguments))]   
-    public void create_easy_Bsql_query_should_work(string filterQuery, string resultSqlQuery)
+    [MemberData(nameof(_filterTestArguments))]
+    public void create_easy_bsql_query_should_work(string filterQuery, string resultSqlQuery)
     {
         string? optionParserFilter =
-            new ODataQueryOptionsParser("filter").PartedQueryForSpecialOption.Parse(filterQuery);
+            new QueryOptionsParser("filter").PartedQueryForSpecialOption.Parse(filterQuery);
 
         FilterQueryGrammar.SetQueryString(optionParserFilter);
         TreeNode? nodeTree = FilterQueryGrammar.QueryFilterParser.Parse(optionParserFilter);

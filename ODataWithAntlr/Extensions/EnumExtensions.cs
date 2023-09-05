@@ -59,13 +59,13 @@ public static class EnumExtensions
     /// </summary>
     /// <param name="option">The operator that is used to filter a query.</param>
     /// <returns>The right SQL-Operator.</returns>
-    public static string ToSqlOperator(this ODataFilterOption option)
+    public static string ToSqlOperator(this FilterOption option)
     {
         return option switch
         {
-            ODataFilterOption.None => "None",
-            ODataFilterOption.DollarFilter => "WHERE",
-            ODataFilterOption.DollarOrderBy => "ORDERBY",
+            FilterOption.None => "None",
+            FilterOption.DollarFilter => "WHERE",
+            FilterOption.DollarOrderBy => "ORDERBY",
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
     }

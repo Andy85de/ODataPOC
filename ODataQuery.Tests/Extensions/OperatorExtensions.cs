@@ -35,8 +35,8 @@ public static class OperatorExtensions
 
         return @operator.ToLower() switch
         {
-            ODataLikeExpressionCombinator.OrCombinator => ExpressionCombinator.Or,
-            ODataLikeExpressionCombinator.AndCombinator => ExpressionCombinator.And,
+            FilterExpressionCombinator.OrCombinator => ExpressionCombinator.Or,
+            FilterExpressionCombinator.AndCombinator => ExpressionCombinator.And,
             _ => throw new ArgumentOutOfRangeException(nameof(@operator), $"Not expected direction value: {@operator}")
         };
     }

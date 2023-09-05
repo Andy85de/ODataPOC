@@ -1,6 +1,6 @@
 ﻿namespace ODataWithSprache.Grammar;
 
-public static class ODataLikeExpressionOperators
+public static class ExpressionOperators
 {
     /// <summary>
     ///     The equal operator that is used in a query.

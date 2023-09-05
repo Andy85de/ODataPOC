@@ -29,19 +29,19 @@ public sealed class FilterQueryGrammar
     ///     The binary operator are used to parse an expression an return the <see cref="ExpressionCombinator" />.
     /// </summary>
     internal static readonly Parser<ExpressionCombinator> _binaryOperator = Parse
-        .String(ODataLikeExpressionCombinator.OrCombinator)
+        .String(FilterExpressionCombinator.OrCombinator)
         .Return(ExpressionCombinator.Or)
-        .Or(Parse.String(ODataLikeExpressionCombinator.AndCombinator).Return(ExpressionCombinator.And));
+        .Or(Parse.String(FilterExpressionCombinator.AndCombinator).Return(ExpressionCombinator.And));
 
     /// <summary>
     ///     The binary expression is used as a look-ahead to evaluated if the string has and binaryExpression.
     ///     If no binary expression exists, the tree has only a root with one leaf.
     /// </summary>
     internal static Parser<ExpressionCombinator> BinaryOperatorAsLookAheadParser =>
-        Parse.RegexMatch(new Regex($".*\\s+{ODataLikeExpressionCombinator.OrCombinator}\\s+", RegexOptions.IgnoreCase))
+        Parse.RegexMatch(new Regex($".*\\s+{FilterExpressionCombinator.OrCombinator}\\s+", RegexOptions.IgnoreCase))
             .Return(ExpressionCombinator.Or)
             .Or(
-                Parse.RegexMatch(new Regex($".*\\s+{ODataLikeExpressionCombinator.AndCombinator}\\s+", RegexOptions.IgnoreCase))
+                Parse.RegexMatch(new Regex($".*\\s+{FilterExpressionCombinator.AndCombinator}\\s+", RegexOptions.IgnoreCase))
                     .Return(ExpressionCombinator.And))
             .Or(Parse.Return(ExpressionCombinator.None));
 
@@ -74,7 +74,7 @@ public sealed class FilterQueryGrammar
         from expressionNodeString in ExpressionNode
         select CreateRootNodeExpression(
             expressionNodeString,
-            ODataFilterOption.DollarFilter);
+            FilterOption.DollarFilter);
 
     /// <summary>
     ///     The parser combines the one or more expressions with a binary operator
@@ -97,16 +97,16 @@ public sealed class FilterQueryGrammar
     ///     The operator enum parser an operator and return the equivalent <see cref="OperatorType" />.
     /// </summary>
     internal static Parser<OperatorType> OperatorEnum =>
-        Parse.String(ODataLikeExpressionOperators.EqualsOperator)
+        Parse.String(ExpressionOperators.EqualsOperator)
             .Return(OperatorType.EqualsOperator)
-            .Or(Parse.IgnoreCase(ODataLikeExpressionOperators.GreaterThenOperator).Return(OperatorType.GreaterThenOperator))
+            .Or(Parse.IgnoreCase(ExpressionOperators.GreaterThenOperator).Return(OperatorType.GreaterThenOperator))
             .Or(
-                Parse.IgnoreCase(ODataLikeExpressionOperators.GreaterEqualsOperator)
+                Parse.IgnoreCase(ExpressionOperators.GreaterEqualsOperator)
                     .Return(OperatorType.GreaterEqualsOperator))
-            .Or(Parse.IgnoreCase(ODataLikeExpressionOperators.LessThenOperator).Return(OperatorType.LessThenOperator))
-            .Or(Parse.IgnoreCase(ODataLikeExpressionOperators.LessEqualsOperator).Return(OperatorType.LessEqualsOperator))
-            .Or(Parse.IgnoreCase(ODataLikeExpressionOperators.NotEqualsOperator).Return(OperatorType.NotEqualsOperator))
-            .Or(Parse.IgnoreCase(ODataLikeExpressionOperators.EqualsOperator).Return(OperatorType.EqualsOperator));
+            .Or(Parse.IgnoreCase(ExpressionOperators.LessThenOperator).Return(OperatorType.LessThenOperator))
+            .Or(Parse.IgnoreCase(ExpressionOperators.LessEqualsOperator).Return(OperatorType.LessEqualsOperator))
+            .Or(Parse.IgnoreCase(ExpressionOperators.NotEqualsOperator).Return(OperatorType.NotEqualsOperator))
+            .Or(Parse.IgnoreCase(ExpressionOperators.EqualsOperator).Return(OperatorType.EqualsOperator));
 
     /// <summary>
     ///     The inner value of an expression that can contain a quoted or unquoted value.
@@ -236,7 +236,7 @@ public sealed class FilterQueryGrammar
 
         if (_rootNode == null)
         {
-            _rootNode = new RootNode(ODataFilterOption.DollarFilter, _QueryString ?? string.Empty)
+            _rootNode = new RootNode(FilterOption.DollarFilter, _QueryString ?? string.Empty)
             {
                 LeftChild = new BinaryExpressionNode(leftExpression, rightExpression, binaryOperator)
             };
@@ -264,7 +264,7 @@ public sealed class FilterQueryGrammar
     /// <param name="option">The filter string option that is used for the </param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">If the <paramref name="treeNode" /> is null.</exception>
-    internal static TreeNode CreateRootNodeExpression(TreeNode? treeNode, ODataFilterOption option)
+    internal static TreeNode CreateRootNodeExpression(TreeNode? treeNode, FilterOption option)
     {
         if (treeNode == null)
         {

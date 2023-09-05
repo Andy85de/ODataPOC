@@ -20,7 +20,7 @@ public abstract class TreeNodeVisitorBase<TResult>
     ///     that will be created after visiting the <see cref="BinaryExpressionNode" />.
     /// </returns>
     protected abstract TResult VisitBinaryExpressionNode(
-        BinaryExpressionNode expression);
+        BinaryExpressionNode expression, params object[] optionalParameter);
 
     /// <summary>
     ///     Describes how a <see cref="ExpressionNode" /> node should be visited.
@@ -31,7 +31,7 @@ public abstract class TreeNodeVisitorBase<TResult>
     ///     <typeparam name="TResult" />
     ///     that will be created after visiting the <see cref="ExpressionNode" />.
     /// </returns>
-    protected abstract TResult VisitExpressionNode(ExpressionNode property);
+    protected abstract TResult VisitExpressionNode(ExpressionNode property, params object[] optionalParameter);
 
     /// <summary>
     ///     Describes how a <see cref="RootNode" /> node should be visited.
@@ -43,5 +43,5 @@ public abstract class TreeNodeVisitorBase<TResult>
     ///     <typeparam name="TResult" />
     ///     that will be created after visiting the <see cref="RootNode" />.
     /// </returns>
-    public abstract TResult Visit(RootNode root,  params string [] optionalParameter );
+    public abstract TResult Visit(RootNode root,  params object [] optionalParameter );
 }

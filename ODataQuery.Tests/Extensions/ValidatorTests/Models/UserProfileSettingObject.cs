@@ -1,4 +1,4 @@
-﻿namespace ODataQueryTests.Validator.Models;
+﻿namespace ODataQueryTests.ValidatorTests.Models;
 
 public class UserProfileSettingObject
 {

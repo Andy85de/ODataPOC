@@ -23,8 +23,4 @@
             <_Parameter1>ODataQuery.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Abstraction\" />
-    </ItemGroup>
 </Project>

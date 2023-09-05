@@ -10,7 +10,7 @@ public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBase<string>
     
     /// <inheritdoc/>
     protected override string VisitBinaryExpressionNode(
-        BinaryExpressionNode?  expression)
+        BinaryExpressionNode?  expression, params object[] optionalParameter)
     {
         if (expression == null)
         {
@@ -35,7 +35,7 @@ public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBase<string>
     }
 
     /// <inheritdoc/>
-    protected override string VisitExpressionNode(ExpressionNode expression)
+    protected override string VisitExpressionNode(ExpressionNode expression, params object[] optionalParameter)
     {
         if (expression == null)
         {
@@ -50,9 +50,9 @@ public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBase<string>
     }
 
     /// <inheritdoc/>
-    public override string Visit(RootNode? root, params string [] optionalParameter)
+    public override string Visit(RootNode? root, params object [] optionalParameter)
     {
-        string variable = optionalParameter[0];
+        string variable = (string)optionalParameter[0];
 
         if (string.IsNullOrWhiteSpace(variable))
         {
