@@ -8,7 +8,7 @@ namespace ODataWithSprache.Visitors;
 ///     An implementation of the <see cref="TreeNodeVisitorBase{TResult}" /> visitor class.
 ///     for sql.
 /// </summary>
-public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBase<string>
+public class TreeNodeSQLFilterVisitor : TreeNodeVisitorBaseForSQL<string>
 {
     private readonly ILogger<TreeNodeSQLFilterVisitor> _Logger;
 

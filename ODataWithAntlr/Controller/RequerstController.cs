@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using JasperFx.Core;
 using Marten;
 using Marten.Pagination;
 using Microsoft.AspNetCore.Mvc;
@@ -32,30 +33,36 @@ public class RequestController: ControllerBase
             .Where(r => true)
             .OrderBy("")
             .ToPagedList(1,1);
-
+       
         return Ok(request);
     }
     
     [HttpGet("TestExpression")]
     public async Task<IActionResult> GetExpressionQuery([FromQuery] FilterQuery query)
     {
-        var queryString = "$filter=Amount eq 100";
+        var queryString = $"$filter={query.Filter}";
+        var orderByQuery = $"{query.OrderByQuery}";
+        
         var queryOption = "filter";
 
         string? resultQueryString =
             new QueryOptionsParser(queryOption).PartedQueryForSpecialOption.Parse(queryString);
         FilterQueryGrammar.SetQueryString(queryString);
         
+        var orderByObjects = new OderByQueryGrammar().OrderByListQuery.Parse(orderByQuery);
+        
+        var oderByString = orderByObjects
+            .Select(p => $"{p.PropertyName} {(p.Sorted == SortDirection.Ascending ? "asc" : "desc")}")
+            .ToArray();
+        
         TreeNode? treeNodeResult = FilterQueryGrammar.QueryFilterParser.Parse(resultQueryString);
         
-        var treeExpression = new TreeNodeExpressionVisitor().Visit(treeNodeResult.ToRootNode(),typeof(UserSettingObjectMarten));
-        var Parameter = Expression.Parameter(typeof(UserSettingObjectMarten));
-        
-        Expression<Func<UserSettingObjectMarten, bool>> func = Expression.Lambda<Func<UserSettingObjectMarten, bool>>(
-            treeExpression, Parameter);
-        Func<UserSettingObjectMarten, bool> filter = func.Compile();
+        var filterExpression = new TreeNodeExpressionVisitor().Visit<UserSettingObjectMarten>(treeNodeResult);
 
-        var result = _DocumentSession.Query<UserSettingObjectMarten>().Where(filter).ToList();
+        IPagedList<UserSettingObjectMarten> result = _DocumentSession.Query<UserSettingObjectMarten>()
+            .Where(filterExpression)
+            .OrderBy(orderByQuery)
+            .ToPagedList(query.Offset, query.Limit);
 
         return Ok(result);
     }

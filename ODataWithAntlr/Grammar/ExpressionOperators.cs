@@ -8,27 +8,33 @@ public static class ExpressionOperators
     public const string EqualsOperator = "eq";
 
     /// <summary>
-    ///     The not equal operator that is ued in a query.
+    ///     The not equal operator that is used in a query.
     /// </summary>
     public const string NotEqualsOperator = "ne";
 
     /// <summary>
-    ///     The greater that operator that is ued in a query.
+    ///     The greater that operator that is used in a query.
     /// </summary>
     public const string GreaterThenOperator = "gt";
 
     /// <summary>
-    ///     The greater equals operator that is ued in a query.
+    ///     The greater equals operator that is used in a query.
     /// </summary>
     public const string GreaterEqualsOperator = "ge";
 
     /// <summary>
-    ///     The less then operator that is ued in a query.
+    ///     The less then operator that is used in a query.
     /// </summary>
     public const string LessThenOperator = "lt";
 
     /// <summary>
-    ///     The less equals operator that is ued in a query.
+    ///     The less equals operator that is used in a query.
     /// </summary>
     public const string LessEqualsOperator = "le";
+
+
+    /// <summary>
+    ///     The less contains operator that is used in a query.
+    /// </summary>
+    public const string ContainsOperator = "ct";
 }

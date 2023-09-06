@@ -40,5 +40,10 @@ public enum OperatorType
     /// <summary>
     ///     The less equals operator that connects the left-hand-side with right-hand-side.
     /// </summary>
-    LessEqualsOperator
+    LessEqualsOperator,
+    
+    /// <summary>
+    ///  The contains operator that connects the left-hand-side with the right-hand-side.
+    /// </summary>
+    Contains
 }

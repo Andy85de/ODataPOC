@@ -15,28 +15,14 @@ public class TreeNodeExpressionVisitor: TreeNodeVisitorBase<Expression>
             throw new ArgumentNullException(nameof(expression));
         }
 
-        if (expression.RightChild.GetType() == typeof(ExpressionNode))
-        {
-            return expression.BinaryType switch
-            {
-                ExpressionCombinator.And => Expression.And(
-                    VisitExpressionNode(expression.LeftChild.ToExpressionNode(), optionalParameter),
-                    VisitExpressionNode(expression.RightChild.ToExpressionNode(), optionalParameter)),
-                ExpressionCombinator.Or => Expression.Or(
-                    VisitExpressionNode(expression.LeftChild.ToExpressionNode(), optionalParameter),
-                    VisitExpressionNode(expression.RightChild.ToExpressionNode(), optionalParameter)),
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
-
         return expression.BinaryType switch
         {
-            ExpressionCombinator.And => Expression.And(
-                VisitExpressionNode(expression.LeftChild.ToExpressionNode(), optionalParameter),
-                VisitBinaryExpressionNode(expression.RightChild.ToBinaryExpressionNode(), optionalParameter)),
-            ExpressionCombinator.Or => Expression.Or(
-                VisitExpressionNode(expression.LeftChild.ToExpressionNode(), optionalParameter),
-                VisitBinaryExpressionNode(expression.RightChild.ToBinaryExpressionNode(), optionalParameter)),
+            ExpressionCombinator.And => Expression.AndAlso(
+                VisitNode(expression.LeftChild, optionalParameter),
+                VisitNode(expression.RightChild, optionalParameter)),
+            ExpressionCombinator.Or => Expression.OrElse(
+                VisitNode(expression.LeftChild, optionalParameter),
+                VisitNode(expression.RightChild, optionalParameter)),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -48,21 +34,34 @@ public class TreeNodeExpressionVisitor: TreeNodeVisitorBase<Expression>
             throw new ArgumentException(nameof(property));
         }
 
-        return ExpressionHelper.CreateSimpleExpression(property, (Type)optionalParameter[0]);
+        return ExpressionHelper.CreateSimpleExpression(
+            property,
+            optionalParameter.OfType<Type>().Single(),
+            optionalParameter.OfType<ParameterExpression>().Single());
     }
 
-    public override Expression Visit(RootNode root, params object[] optionalParameter)
+    protected override Expression VisitRoot(RootNode root, params object[] optionalParameter)
     {
         if (root == null)
         {
             throw new ArgumentNullException(nameof(root));
         }
 
-        if (root.LeftChild.GetType() == typeof(ExpressionNode))
-        {
-            return VisitExpressionNode(root.LeftChild.ToExpressionNode(), optionalParameter);
-        }
+        Type type = optionalParameter.OfType<Type>().Single();
 
-        return VisitBinaryExpressionNode(root.LeftChild.ToBinaryExpressionNode(), optionalParameter);
+        ParameterExpression parameter = Expression.Parameter(type);
+
+        Expression result = VisitNode(root, optionalParameter.Append(parameter).ToArray());
+
+        return Expression.Lambda(typeof(Func<,>).MakeGenericType(type, typeof(bool)), result, parameter);
+    }
+
+    public override Expression<Func<TModel, bool>> Visit<TModel>(TreeNode? root)
+    {
+        if (root is not RootNode rootNode)
+        {
+            throw new ArgumentException($"Root not of type {nameof(RootNode)}.");
+        }
+        return (Expression<Func<TModel, bool>>) VisitRoot(rootNode, typeof(TModel));
     }
 }

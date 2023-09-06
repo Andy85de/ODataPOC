@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using ODataWithSprache.TreeStructure;
 using Sprache;
 
@@ -106,7 +107,8 @@ public sealed class FilterQueryGrammar
             .Or(Parse.IgnoreCase(ExpressionOperators.LessThenOperator).Return(OperatorType.LessThenOperator))
             .Or(Parse.IgnoreCase(ExpressionOperators.LessEqualsOperator).Return(OperatorType.LessEqualsOperator))
             .Or(Parse.IgnoreCase(ExpressionOperators.NotEqualsOperator).Return(OperatorType.NotEqualsOperator))
-            .Or(Parse.IgnoreCase(ExpressionOperators.EqualsOperator).Return(OperatorType.EqualsOperator));
+            .Or(Parse.IgnoreCase(ExpressionOperators.EqualsOperator).Return(OperatorType.EqualsOperator))
+            .Or(Parse.IgnoreCase(ExpressionOperators.ContainsOperator).Return(OperatorType.Contains));
 
     /// <summary>
     ///     The inner value of an expression that can contain a quoted or unquoted value.

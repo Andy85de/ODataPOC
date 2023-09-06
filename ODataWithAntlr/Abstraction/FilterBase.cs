@@ -9,8 +9,8 @@ public abstract class FilterBase : IFilterObject
     public virtual string? OrderByQuery { get; set; } = string.Empty;
 
     /// <inheritdoc />
-    public int Offset { get; set; } = 0;
+    public virtual int Offset { get; set; } = 1;
 
     /// <inheritdoc />
-    public int Limit { get; set; } = 50;
+    public virtual int Limit { get; set; } = 50;
 }

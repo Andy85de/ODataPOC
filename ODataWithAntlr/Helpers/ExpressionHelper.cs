@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
+using JasperFx.Core;
 using ODataWithSprache.Grammar;
 using ODataWithSprache.TreeStructure;
 
@@ -6,44 +8,81 @@ namespace ODataWithSprache.Helpers;
 
 internal static class ExpressionHelper
 {
-    internal static Expression CreateSimpleExpression(ExpressionNode expressionNode, Type ResultObject)
+    internal static Expression CreateSimpleExpression(ExpressionNode expressionNode, Type resultObject, ParameterExpression parameter)
     {
-        ParameterExpression parameter = Expression.Parameter(ResultObject);
+        PropertyInfo propertyInfo = resultObject.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .First(p => p.Name.Equals(expressionNode.LeftSideExpression, StringComparison.OrdinalIgnoreCase));
 
-        MemberExpression memberExpression = Expression.Property(parameter, expressionNode.LeftSideExpression);
+        var propertyExpression = Expression.Property(parameter, propertyInfo);
 
-        ConstantExpression constantExpression = Expression.Constant(
-            ParserHelper.ParseAndReturnRightObject(expressionNode.RightSideExpression),
-            ParserHelper.GetRightHandType(expressionNode.RightSideExpression));
+        ConstantExpression constExpl;
 
+        if (propertyInfo.PropertyType == typeof(string))
+        {
+            constExpl = Expression.Constant(expressionNode.RightSideExpression);
+        }
+
+        else if (propertyInfo.PropertyType == typeof(int))
+        {
+            constExpl = Expression.Constant(ParserHelper.ParseAndReturnRightObject(expressionNode.RightSideExpression));
+        }
+
+        else
+        {
+            throw new NotImplementedException();
+        }
+        
         return expressionNode.Operator switch
         {
             OperatorType.EqualsOperator =>
-                Expression.Lambda(Expression.NotEqual(memberExpression, constantExpression), parameter),
+                Expression.Equal(propertyExpression, constExpl),
 
             OperatorType.NotEqualsOperator =>
-                Expression.NotEqual(memberExpression, constantExpression),
+                Expression.NotEqual(propertyExpression, constExpl),
 
             OperatorType.GreaterThenOperator =>
                 Expression.GreaterThan(
-                    memberExpression,
-                    constantExpression),
+                    propertyExpression,
+                    constExpl),
 
             OperatorType.GreaterEqualsOperator =>
                 Expression.GreaterThanOrEqual(
-                    memberExpression,
-                    constantExpression),
+                    propertyExpression,
+                    constExpl),
 
             OperatorType.LessThenOperator =>
                 Expression.LessThan(
-                    memberExpression,
-                    constantExpression),
+                    propertyExpression,
+                    constExpl),
 
             OperatorType.LessEqualsOperator =>
                 Expression.LessThanOrEqual(
-                    memberExpression,
-                    constantExpression),
+                    propertyExpression,
+                    constExpl),
+            
+            OperatorType.Contains => CreateContainsExpression(
+                propertyExpression,
+                constExpl),
+                
             _ => throw new ArgumentOutOfRangeException($"The operator {expressionNode.Operator} is not supported.")
         };
+    }
+
+    private static Expression CreateContainsExpression(
+        MemberExpression memberExpression,
+        ConstantExpression constExp)
+    {
+        MethodInfo? containsMethode = typeof(string).GetMethod(
+            nameof(string.Contains),
+            BindingFlags.Public | BindingFlags.Instance,
+            null,
+            new[] { typeof(string), typeof(StringComparison) },
+            null);
+
+        return Expression.Call(
+            memberExpression,
+            containsMethode,
+            constExp,
+            Expression.Constant(StringComparison.OrdinalIgnoreCase));
     }
 }

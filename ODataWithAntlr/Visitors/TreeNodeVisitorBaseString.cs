@@ -1,17 +1,10 @@
-﻿using System.Linq.Expressions;
-using ODataWithSprache.TreeStructure;
+﻿using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Visitors;
 
-/// <summary>
-///     The base visitor provides methods to travers a tree.
-///     This class can be traversed an build a significant
-///     query in a special language (i.e. SQL, Linq..)
-/// </summary>
-/// <typeparam name="TResult"></typeparam>
-public abstract class TreeNodeVisitorBase<TResult>
+public abstract class TreeNodeVisitorBaseForSQL<TResult>
 {
-    /// <summary>
+        /// <summary>
     ///     Describes how a <see cref="BinaryExpressionNode" /> node should be visited.
     /// </summary>
     /// <param name="expression">The <see cref="BinaryExpressionNode" /> that should be visited.</param>
@@ -58,14 +51,5 @@ public abstract class TreeNodeVisitorBase<TResult>
     ///     <typeparam name="TResult" />
     ///     that will be created after visiting the <see cref="RootNode" />.
     /// </returns>
-    protected abstract TResult VisitRoot(RootNode root,  params object [] optionalParameter);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="root"></param>
-    /// <typeparam name="TModel"></typeparam>
-    /// <returns></returns>
-    public abstract Expression<Func<TModel, bool>> Visit<TModel>(TreeNode? root);
-
+    public abstract TResult Visit(RootNode root,  params object [] optionalParameter);
 }

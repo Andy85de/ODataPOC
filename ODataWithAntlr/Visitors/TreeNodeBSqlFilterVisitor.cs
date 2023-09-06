@@ -4,7 +4,7 @@ using ODataWithSprache.TreeStructure;
 
 namespace ODataWithSprache.Visitors;
 
-public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBase<string>
+public class TreeNodeBSqlFilterVisitor: TreeNodeVisitorBaseForSQL<string>
 {
     private const string _AssignOperator = "->>";
     
